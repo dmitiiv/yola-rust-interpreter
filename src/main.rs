@@ -11,21 +11,22 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() > 1 {
-        println!("args len {:?}", &args)
+        println!("THere are more then 1 argument");
     } else if args.len() == 1 {
-        println!("args len {:?}", &args);
+        println!("There is only one argument");
         run_file(&args[0]);
     } else {
-        println!("args len {:?}", &args)
+        println!("There is no arguments");
     }
 }
 
 fn run_file(path: &str) {
     let mut reader = SourceReader::new();
 
-    reader
-        .read_sources(path)
-        .expect("Error during read sources");
+    if let Err(err) = reader.read_sources(path) {
+        eprintln!("Error reading sources: {:?}", err);
+        return;
+    }
 
     match reader.get_sources() {
         Ok(_source) => run(_source),
