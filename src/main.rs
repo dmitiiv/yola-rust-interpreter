@@ -1,5 +1,7 @@
 mod scanner;
 mod source_reader;
+mod token;
+
 use std::env;
 
 use scanner::Scanner;
@@ -33,4 +35,9 @@ fn run_file(path: &str) {
 
 fn run(source: String) {
     let scanner = Scanner::new(source);
+    let tokens = scanner.scan_tokens();
+
+    for token in tokens {
+        println!("Token - {:?}", token);
+    }
 }

@@ -1,3 +1,5 @@
+use crate::token::Token;
+
 pub struct Scanner {
     source: String,
 }
@@ -5,5 +7,10 @@ pub struct Scanner {
 impl Scanner {
     pub fn new(source: String) -> Scanner {
         Scanner { source }
+    }
+
+    pub fn scan_tokens(&self) -> Vec<Token> {
+        let token = Token {};
+        vec![token]
     }
 }
