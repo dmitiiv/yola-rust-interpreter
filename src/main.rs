@@ -1,8 +1,9 @@
+mod report;
 mod scanner;
 mod source_reader;
 mod token;
 
-use std::env;
+use std::{env, io};
 
 use scanner::Scanner;
 use source_reader::SourceReader;
@@ -17,6 +18,7 @@ fn main() {
         run_file(&args[0]);
     } else {
         println!("There is no arguments");
+        run_prompt();
     }
 }
 
@@ -31,6 +33,24 @@ fn run_file(path: &str) {
     match reader.get_sources() {
         Ok(_source) => run(_source),
         Err(err) => println!("Error - {:?}", err),
+    }
+}
+
+fn run_prompt() {
+    loop {
+        let mut input = String::new();
+
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Error parsing promt");
+
+        let trimmed_input = input.trim();
+
+        if trimmed_input.eq_ignore_ascii_case("exit") {
+            break;
+        }
+
+        run(trimmed_input.to_owned())
     }
 }
 
