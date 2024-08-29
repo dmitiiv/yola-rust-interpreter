@@ -1,6 +1,6 @@
 use std::process;
 
-struct Report {}
+pub struct Report {}
 
 impl Report {
     pub fn new() -> Report {
