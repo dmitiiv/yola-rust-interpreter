@@ -1,8 +1,8 @@
 mod lang;
+mod lexemes;
 mod report;
 mod scanner;
 mod source_reader;
-mod token;
 
 use std::env;
 
