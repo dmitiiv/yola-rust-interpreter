@@ -9,12 +9,12 @@ use super::{
 pub struct Token {
     id: TokenType,
     lexeme: String,
-    literal: Literal,
+    literal: Option<Literal>,
     line: i32,
 }
 
 impl Token {
-    pub fn new(&self, id: TokenType, lexeme: String, line: i32, literal: Literal) -> Token {
+    pub fn new(id: TokenType, lexeme: String, line: i32, literal: Option<Literal>) -> Token {
         Token {
             id,
             lexeme,
