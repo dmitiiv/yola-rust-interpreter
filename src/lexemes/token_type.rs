@@ -43,5 +43,5 @@ pub enum TokenType {
     TRUE,
     VAR,
     WHILE,
-    EO,
+    EOF,
 }
