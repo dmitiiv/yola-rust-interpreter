@@ -1,4 +1,5 @@
 use crate::lexemes::{literal::Literal, token::Token, token_type::TokenType};
+use crate::utils::string_utils::CharAt;
 
 const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
 pub struct Scanner {
@@ -23,7 +24,7 @@ impl Scanner {
     pub fn scan_tokens(&mut self) -> &Vec<Token> {
         while self.is_at_end() {
             self.start = self.current;
-            self.scan_token()
+            self.scan_token().unwrap();
         }
 
         let token = Token::new(TokenType::EOF, String::from(""), self.line, None);
@@ -32,7 +33,7 @@ impl Scanner {
         &self.tokens
     }
 
-    fn scan_token(&mut self) {
+    fn scan_token(&mut self) -> Result<(), String> {
         let char = self.advance();
 
         match char {
@@ -46,17 +47,63 @@ impl Scanner {
             '-' => self.add_token(TokenType::MINUS),
             ';' => self.add_token(TokenType::SEMICOLON),
             '*' => self.add_token(TokenType::STAR),
-            _ => self.add_token(TokenType::AND),
+            '!' => {
+                let token = if self.matcher('=') {
+                    TokenType::BANG_EQUAL
+                } else {
+                    TokenType::BANG
+                };
+                self.add_token(token);
+            }
+            '=' => {
+                let token = if self.matcher('=') {
+                    TokenType::EQUAL_EQUAL
+                } else {
+                    TokenType::EQUAL
+                };
+                self.add_token(token);
+            }
+            '<' => {
+                let token = if self.matcher('=') {
+                    TokenType::LESS_EQUAL
+                } else {
+                    TokenType::LESS
+                };
+                self.add_token(token);
+            }
+            '>' => {
+                let token = if self.matcher('=') {
+                    TokenType::GREATER_EQUAL
+                } else {
+                    TokenType::GREATER
+                };
+                self.add_token(token);
+            }
+            '/' => {
+                if self.matcher('/') {
+                    while self.peek() != '\n' && self.is_at_end() {
+                        self.advance();
+                    }
+                }
+
+                self.add_token(TokenType::SLASH)
+            }
+            ' ' | '\r' | '\t' => (),
+            '\n' => {
+                let temp = self.line + 1;
+                self.line = temp;
+            }
+            _ => panic!("Char = {} didn't match any token", &char),
         };
+
+        Ok(())
     }
 
     fn advance(&mut self) -> char {
-        self.current = self.current + 1;
+        let temp = self.current + 1;
+        self.current = temp;
 
-        match self.source.chars().nth(self.current - 1) {
-            Some(character) => character,
-            None => '_',
-        }
+        self.source.char_at(self.current - 1)
     }
 
     fn add_token(&mut self, id: TokenType) {
@@ -73,7 +120,27 @@ impl Scanner {
         self.tokens.push(token);
     }
 
+    fn matcher(&mut self, expected: char) -> bool {
+        if self.is_at_end() {
+            return false;
+        } else if self.source.char_at(self.current) != expected {
+            return false;
+        } else {
+            let temp = self.current + 1;
+            self.current = temp;
+            true
+        }
+    }
+
     fn is_at_end(&self) -> bool {
         self.current >= self.source.len()
+    }
+
+    fn peek(&self) -> char {
+        if self.is_at_end() {
+            return '\0';
+        } else {
+            self.source.char_at(self.current)
+        }
     }
 }
