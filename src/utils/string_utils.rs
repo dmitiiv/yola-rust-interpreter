@@ -13,3 +13,16 @@ impl CharAt for String {
         self.chars().nth(index).unwrap()
     }
 }
+
+pub trait Slice {
+    fn slice(&self, start: usize, end: usize) -> String;
+}
+
+impl Slice for String {
+    fn slice(&self, start: usize, end: usize) -> String {
+        // add end and start validation
+
+        let chars: Vec<char> = self.chars().collect();
+        chars[start..end].iter().collect()
+    }
+}

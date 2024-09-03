@@ -1,8 +1,8 @@
 use crate::lexemes::{literal::Literal, token::Token, token_type::TokenType};
 use crate::report::report::{ErrorTypes, Report};
-use crate::utils::string_utils::CharAt;
+use crate::utils::string_utils::{CharAt, Slice};
 
-const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
+// const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
 pub struct Scanner {
     tokens: Vec<Token>,
     source: String,
@@ -115,9 +115,7 @@ impl Scanner {
     }
 
     fn create_token(&mut self, id: TokenType, literal: Option<Literal>) {
-        let chars: Vec<char> = self.source.chars().collect();
-
-        let text: String = chars[self.start..self.current].iter().collect();
+        let text = self.source.slice(self.start, self.current);
 
         let token = Token::new(id, text, self.line, literal);
 
@@ -159,6 +157,12 @@ impl Scanner {
                 let err_mes = String::from("Cannot find close sign for string");
                 Report::error(None, ErrorTypes::SynErr.as_str(), self.line, err_mes)
             }
+
+            self.advance();
+
+            // let value = self.source.slice(self.start + 1, self.current - 1);
+
+            // self.create_token(TokenType::STRING, value);
         }
     }
 }
