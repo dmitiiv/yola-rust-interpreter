@@ -10,11 +10,11 @@ pub struct Token {
     id: TokenType,
     lexeme: String,
     literal: Option<Literal>,
-    line: i32,
+    line: usize,
 }
 
 impl Token {
-    pub fn new(id: TokenType, lexeme: String, line: i32, literal: Option<Literal>) -> Token {
+    pub fn new(id: TokenType, lexeme: String, line: usize, literal: Option<Literal>) -> Token {
         Token {
             id,
             lexeme,

@@ -1,4 +1,5 @@
 use crate::lexemes::{literal::Literal, token::Token, token_type::TokenType};
+use crate::report::report::{ErrorTypes, Report};
 use crate::utils::string_utils::CharAt;
 
 const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
@@ -7,7 +8,7 @@ pub struct Scanner {
     source: String,
     start: usize,
     current: usize,
-    line: i32,
+    line: usize,
 }
 
 impl Scanner {
@@ -24,7 +25,7 @@ impl Scanner {
     pub fn scan_tokens(&mut self) -> &Vec<Token> {
         while self.is_at_end() {
             self.start = self.current;
-            self.scan_token().unwrap();
+            self.scan_token();
         }
 
         let token = Token::new(TokenType::EOF, String::from(""), self.line, None);
@@ -33,7 +34,7 @@ impl Scanner {
         &self.tokens
     }
 
-    fn scan_token(&mut self) -> Result<(), String> {
+    fn scan_token(&mut self) {
         let char = self.advance();
 
         match char {
@@ -93,10 +94,13 @@ impl Scanner {
                 let temp = self.line + 1;
                 self.line = temp;
             }
-            _ => panic!("Char = {} didn't match any token", &char),
-        };
+            '"' => self.string(),
+            _ => {
+                let err_mes = format!("Unexpected character: {}", char);
 
-        Ok(())
+                Report::error(None, ErrorTypes::TypeErr.as_str(), self.line, err_mes)
+            }
+        };
     }
 
     fn advance(&mut self) -> char {
@@ -141,6 +145,20 @@ impl Scanner {
             return '\0';
         } else {
             self.source.char_at(self.current)
+        }
+    }
+
+    fn string(&mut self) {
+        while self.peek() != '"' && !self.is_at_end() {
+            if self.peek() == '\n' {
+                let temp = self.line + 1;
+                self.line = temp;
+            }
+
+            if self.is_at_end() {
+                let err_mes = String::from("Cannot find close sign for string");
+                Report::error(None, ErrorTypes::SynErr.as_str(), self.line, err_mes)
+            }
         }
     }
 }
