@@ -36,7 +36,7 @@ impl Scanner {
 
     fn scan_token(&mut self) {
         let char = self.advance();
-
+        println!("char = {}", char);
         match char {
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_BRACE),
@@ -164,5 +164,23 @@ impl Scanner {
 
             // self.create_token(TokenType::STRING, value);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::scanner;
+
+    use super::*;
+
+    #[test]
+    fn test_left_parem() {
+        let source = String::from("var func = (");
+
+        let mut scanner = Scanner::new(source);
+
+        let token = scanner.scan_tokens()[0];
+
+        assert_eq!(scanner.scan_tokens()[0], '(');
     }
 }

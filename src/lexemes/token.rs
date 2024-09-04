@@ -23,7 +23,7 @@ impl Token {
         }
     }
 
-    pub fn toString(&self) -> String {
+    pub fn to_string(&self) -> String {
         self.line.to_string() + &self.lexeme // + self.literal
     }
 }
