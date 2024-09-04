@@ -1,13 +1,14 @@
 use crate::lexemes::{literal::Literal, token::Token, token_type::TokenType};
-use crate::utils::string_utils::CharAt;
+use crate::report::report::{ErrorTypes, Report};
+use crate::utils::string_utils::{CharAt, Slice};
 
-const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
+// const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
 pub struct Scanner {
     tokens: Vec<Token>,
     source: String,
     start: usize,
     current: usize,
-    line: i32,
+    line: usize,
 }
 
 impl Scanner {
@@ -24,7 +25,7 @@ impl Scanner {
     pub fn scan_tokens(&mut self) -> &Vec<Token> {
         while self.is_at_end() {
             self.start = self.current;
-            self.scan_token().unwrap();
+            self.scan_token();
         }
 
         let token = Token::new(TokenType::EOF, String::from(""), self.line, None);
@@ -33,9 +34,9 @@ impl Scanner {
         &self.tokens
     }
 
-    fn scan_token(&mut self) -> Result<(), String> {
+    fn scan_token(&mut self) {
         let char = self.advance();
-
+        println!("char = {}", char);
         match char {
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_BRACE),
@@ -93,10 +94,13 @@ impl Scanner {
                 let temp = self.line + 1;
                 self.line = temp;
             }
-            _ => panic!("Char = {} didn't match any token", &char),
-        };
+            '"' => self.string(),
+            _ => {
+                let err_mes = format!("Unexpected character: {}", char);
 
-        Ok(())
+                Report::error(None, ErrorTypes::TypeErr.as_str(), self.line, err_mes)
+            }
+        };
     }
 
     fn advance(&mut self) -> char {
@@ -111,9 +115,7 @@ impl Scanner {
     }
 
     fn create_token(&mut self, id: TokenType, literal: Option<Literal>) {
-        let chars: Vec<char> = self.source.chars().collect();
-
-        let text: String = chars[self.start..self.current].iter().collect();
+        let text = self.source.slice(self.start, self.current);
 
         let token = Token::new(id, text, self.line, literal);
 
@@ -142,5 +144,43 @@ impl Scanner {
         } else {
             self.source.char_at(self.current)
         }
+    }
+
+    fn string(&mut self) {
+        while self.peek() != '"' && !self.is_at_end() {
+            if self.peek() == '\n' {
+                let temp = self.line + 1;
+                self.line = temp;
+            }
+
+            if self.is_at_end() {
+                let err_mes = String::from("Cannot find close sign for string");
+                Report::error(None, ErrorTypes::SynErr.as_str(), self.line, err_mes)
+            }
+
+            self.advance();
+
+            // let value = self.source.slice(self.start + 1, self.current - 1);
+
+            // self.create_token(TokenType::STRING, value);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::scanner;
+
+    use super::*;
+
+    #[test]
+    fn test_left_parem() {
+        let source = String::from("var func = (");
+
+        let mut scanner = Scanner::new(source);
+
+        let token = scanner.scan_tokens()[0];
+
+        assert_eq!(scanner.scan_tokens()[0], '(');
     }
 }
