@@ -4,7 +4,7 @@ use crate::utils::string_utils::{CharAt, Slice};
 
 // const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
 pub struct Scanner {
-    tokens: Vec<Token>,
+    pub tokens: Vec<Token>,
     source: String,
     start: usize,
     current: usize,
@@ -23,7 +23,7 @@ impl Scanner {
     }
 
     pub fn scan_tokens(&mut self) -> &Vec<Token> {
-        while self.is_at_end() {
+        while !self.is_at_end() {
             self.start = self.current;
             self.scan_token();
         }
@@ -36,7 +36,7 @@ impl Scanner {
 
     fn scan_token(&mut self) {
         let char = self.advance();
-        println!("char = {}", char);
+
         match char {
             '(' => self.add_token(TokenType::LEFT_PAREN),
             ')' => self.add_token(TokenType::RIGHT_BRACE),
@@ -175,12 +175,12 @@ mod tests {
 
     #[test]
     fn test_left_parem() {
-        let source = String::from("var func = (");
+        let source = String::from("var func = (some text");
 
         let mut scanner = Scanner::new(source);
 
-        let token = scanner.scan_tokens()[0];
+        let token: &Token = &scanner.scan_tokens()[0];
 
-        assert_eq!(scanner.scan_tokens()[0], '(');
+        assert_eq!(token.id, TokenType::LEFT_PAREN);
     }
 }

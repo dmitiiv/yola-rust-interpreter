@@ -7,7 +7,7 @@ use super::{
 
 #[derive(Debug)]
 pub struct Token {
-    id: TokenType,
+    pub id: TokenType,
     lexeme: String,
     literal: Option<Literal>,
     line: usize,
