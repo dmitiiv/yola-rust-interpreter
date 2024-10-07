@@ -1,4 +1,8 @@
-use std::{fs::File, io::Read, string::FromUtf8Error};
+use std::{
+    fs::File,
+    io::{Error, Read},
+    string::FromUtf8Error,
+};
 
 pub struct SourceReader {
     buffer: Vec<u8>,
@@ -9,11 +13,11 @@ impl SourceReader {
         SourceReader { buffer: vec![] }
     }
 
-    pub fn read_sources(&mut self, path: &str) -> Result<(), String> {
-        let mut file = File::open(path).unwrap();
+    pub fn read_sources(&mut self, path: &str) -> Result<(), Error> {
+        let mut file = File::open(path)?;
         self.buffer.clear();
 
-        file.read_to_end(&mut self.buffer).unwrap();
+        file.read_to_end(&mut self.buffer)?;
 
         Ok(())
     }

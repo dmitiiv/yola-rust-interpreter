@@ -14,11 +14,11 @@ fn main() {
 
     let yola = Yola::new();
 
-    if args.len() > 1 {
+    if args.len() > 2 {
         println!("THere are more then 1 argument");
-    } else if args.len() == 1 {
+    } else if args.len() == 2 {
         println!("There is only one argument");
-        yola.run_file(&args[0]);
+        yola.run_file(&args[1]);
     } else {
         println!("There is no arguments");
         yola.run_prompt();

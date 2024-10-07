@@ -21,7 +21,7 @@ impl Yola {
         match reader.get_sources() {
             Ok(_source) => Yola::run(_source),
             Err(err) => println!("Error - {:?}", err),
-        }
+        };
     }
 
     pub fn run_prompt(&self) {
