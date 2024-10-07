@@ -153,17 +153,19 @@ impl Scanner {
                 self.line = temp;
             }
 
-            if self.is_at_end() {
-                let err_mes = String::from("Cannot find close sign for string");
-                Report::error(None, ErrorTypes::SynErr.as_str(), self.line, err_mes)
-            }
-
             self.advance();
-
-            let value = self.source.slice(self.start + 1, self.current - 1);
-
-            self.create_token(TokenType::STRING, Some(Literal::new(value)));
         }
+
+        if self.is_at_end() {
+            let err_mes = String::from("Cannot find close sign for string");
+            Report::error(None, ErrorTypes::SynErr.as_str(), self.line, err_mes)
+        }
+
+        self.advance();
+
+        let value = self.source.slice(self.start + 1, self.current - 1);
+
+        self.create_token(TokenType::STRING, Some(Literal::new(value)));
     }
 }
 
