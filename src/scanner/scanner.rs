@@ -160,9 +160,9 @@ impl Scanner {
 
             self.advance();
 
-            // let value = self.source.slice(self.start + 1, self.current - 1);
+            let value = self.source.slice(self.start + 1, self.current - 1);
 
-            // self.create_token(TokenType::STRING, value);
+            self.create_token(TokenType::STRING, Some(Literal::new(value)));
         }
     }
 }
@@ -175,12 +175,17 @@ mod tests {
 
     #[test]
     fn test_left_parem() {
-        let source = String::from("var func = (some text");
+        let source = String::from("(");
 
-        let mut scanner = Scanner::new(source);
+        let mut scanner = Scanner::new(source.clone());
 
-        let token: &Token = &scanner.scan_tokens()[0];
+        let tokens = scanner.scan_tokens();
 
-        assert_eq!(true, true);
+        assert_eq!(tokens.len(), 2);
+
+        let token = &tokens[0];
+
+        assert_eq!(token.id, TokenType::LEFT_PAREN);
+        assert_eq!(&token.lexeme, &source);
     }
 }
