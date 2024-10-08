@@ -96,9 +96,13 @@ impl Scanner {
             }
             '"' => self.string(),
             _ => {
-                let err_mes = format!("Unexpected character: {}", char);
+                if char.is_digit(10) {
+                    self.number()
+                } else {
+                    let err_mes = format!("Unexpected character: {}", char);
 
-                Report::error(None, ErrorTypes::TypeErr.as_str(), self.line, err_mes)
+                    Report::error(None, ErrorTypes::TypeErr.as_str(), self.line, err_mes)
+                }
             }
         };
     }
@@ -110,8 +114,24 @@ impl Scanner {
         self.source.char_at(self.current - 1)
     }
 
+    fn peek(&self) -> char {
+        if self.is_at_end() {
+            return '\0';
+        }
+
+        self.source.char_at(self.current)
+    }
+
+    fn peek_next(&self) -> char {
+        if self.current + 1 >= self.source.len() {
+            return '\0';
+        }
+
+        self.source.char_at(self.current + 1)
+    }
+
     fn add_token(&mut self, id: TokenType) {
-        self.create_token(id, None)
+        self.create_token(id, None);
     }
 
     fn create_token(&mut self, id: TokenType, literal: Option<Literal>) {
@@ -138,14 +158,6 @@ impl Scanner {
         self.current >= self.source.len()
     }
 
-    fn peek(&self) -> char {
-        if self.is_at_end() {
-            return '\0';
-        } else {
-            self.source.char_at(self.current)
-        }
-    }
-
     fn string(&mut self) {
         while self.peek() != '"' && !self.is_at_end() {
             if self.peek() == '\n' {
@@ -165,7 +177,34 @@ impl Scanner {
 
         let value = self.source.slice(self.start + 1, self.current - 1);
 
-        self.create_token(TokenType::STRING, Some(Literal::new(value)));
+        self.add_token(TokenType::NUMBER);
+
+        // self.create_token(TokenType::STRING, Some(Literal::new(value)));
+    }
+
+    fn number(&mut self) {
+        let mut consume_digits = |scan: &mut Self| {
+            while scan.peek().is_digit(10) {
+                scan.advance();
+            }
+        };
+
+        consume_digits(self);
+
+        if self.peek() == '.' && self.peek_next().is_digit(10) {
+            self.advance();
+
+            consume_digits(self);
+        }
+
+        let value = self.source.slice(self.start, self.current);
+
+        // self.add_token(TokenType::NUMBER);
+        self.create_token(
+            TokenType::STRING,
+            Some(Literal::new(value)),
+            // Some(Literal::new(value.parse::<f64>().unwrap())),
+        );
     }
 }
 
