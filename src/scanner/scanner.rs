@@ -1,6 +1,7 @@
 use crate::lexemes::{literal::Literal, token::Token, token_type::TokenType};
 use crate::report::report::{ErrorTypes, Report};
 use crate::utils::string_utils::{CharAt, Slice};
+use crate::KEYWORDS;
 
 // const BASE_REG_EXP: &str = "/[a-zA-Z_][a-zA-Z_0-9]*/";
 pub struct Scanner {
@@ -39,7 +40,7 @@ impl Scanner {
 
         match char {
             '(' => self.add_token(TokenType::LEFT_PAREN),
-            ')' => self.add_token(TokenType::RIGHT_BRACE),
+            ')' => self.add_token(TokenType::RIGHT_PAREN),
             '{' => self.add_token(TokenType::LEFT_BRACE),
             '}' => self.add_token(TokenType::RIGHT_BRACE),
             ',' => self.add_token(TokenType::COMMA),
@@ -98,6 +99,8 @@ impl Scanner {
             _ => {
                 if char.is_digit(10) {
                     self.number()
+                } else if self.is_alpha(char) {
+                    self.identifier();
                 } else {
                     let err_mes = format!("Unexpected character: {}", char);
 
@@ -158,6 +161,14 @@ impl Scanner {
         self.current >= self.source.len()
     }
 
+    fn is_alpha(&self, c: char) -> bool {
+        c.is_alphabetic() || c == '_'
+    }
+
+    fn is_alpha_num(&self, c: char) -> bool {
+        c.is_digit(10) || self.is_alpha(c)
+    }
+
     fn string(&mut self) {
         while self.peek() != '"' && !self.is_at_end() {
             if self.peek() == '\n' {
@@ -177,7 +188,7 @@ impl Scanner {
 
         let value = self.source.slice(self.start + 1, self.current - 1);
 
-        self.add_token(TokenType::NUMBER);
+        self.add_token(TokenType::STRING);
 
         // self.create_token(TokenType::STRING, Some(Literal::new(value)));
     }
@@ -201,10 +212,24 @@ impl Scanner {
 
         // self.add_token(TokenType::NUMBER);
         self.create_token(
-            TokenType::STRING,
+            TokenType::NUMBER,
             Some(Literal::new(value)),
             // Some(Literal::new(value.parse::<f64>().unwrap())),
         );
+    }
+
+    fn identifier(&mut self) {
+        while self.is_alpha_num(self.peek()) {
+            self.advance();
+        }
+
+        let text = self.source.slice(self.start, self.current);
+
+        let token_type = KEYWORDS
+            .get(&text.to_string())
+            .unwrap_or(&TokenType::IDENTIFIER);
+
+        self.add_token(token_type.clone());
     }
 }
 
