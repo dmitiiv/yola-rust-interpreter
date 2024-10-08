@@ -1,4 +1,4 @@
-use crate::{scanner::scanner::Scanner, source_reader::SourceReader};
+use crate::scanner::{scanner::Scanner, source_reader::SourceReader};
 use std::io;
 
 pub struct Yola {
