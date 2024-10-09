@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum TokenType {
     // Single-character tokens.
     LEFT_PAREN,
@@ -30,7 +30,7 @@ pub enum TokenType {
     CLASS,
     ELSE,
     FALSE,
-    FUN,
+    FUNC,
     FOR,
     IF,
     NIL,
@@ -41,6 +41,6 @@ pub enum TokenType {
     THIS,
     TRUE,
     VAR,
-    WHILE,
+    LOOP,
     EOF,
 }
