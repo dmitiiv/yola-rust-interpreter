@@ -1,3 +1,4 @@
+mod ast;
 mod lang;
 mod lexemes;
 mod report;

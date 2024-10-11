@@ -13,6 +13,7 @@ pub struct Scanner {
 }
 
 impl Scanner {
+    // Rewrite code to find Tokens asyncronously for every string
     pub fn new(source: String) -> Scanner {
         Scanner {
             source,
