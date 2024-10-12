@@ -1,12 +1,19 @@
 use crate::lexemes::token::Token;
 
-// pub trait Expr {}
-pub struct Expr {}
+use super::expr::Expr;
 
-pub struct Binary {}
+pub struct BinaryExpr {
+    left: Box<Expr>,
+    operator: Token,
+    right: Box<Expr>,
+}
 
-impl Binary {
-    fn new(&self, left: Expr, operator: Token, right: Expr) -> Binary {
-        Binary {}
+impl BinaryExpr {
+    pub fn new(&self, left: Expr, operator: Token, right: Expr) -> BinaryExpr {
+        BinaryExpr {
+            left: Box::new(left),
+            operator,
+            right: Box::new(right),
+        }
     }
 }
