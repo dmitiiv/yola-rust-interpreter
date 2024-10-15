@@ -2,15 +2,16 @@ use crate::lexemes::token::Token;
 
 use super::expr::Expr;
 
+#[derive(Debug)]
 pub struct UnaryExpr {
-    operator: Token,
+    operator: Box<Token>,
     right: Box<Expr>,
 }
 
 impl UnaryExpr {
     pub fn new(&self, operator: Token, right: Expr) -> UnaryExpr {
         UnaryExpr {
-            operator,
+            operator: Box::new(operator),
             right: Box::new(right),
         }
     }
