@@ -1,10 +1,10 @@
 #[derive(Debug)]
-pub struct LiteralExpr {
+pub struct Literal {
     pub value: String,
 }
 
-impl LiteralExpr {
-    pub fn new(value: String) -> LiteralExpr {
-        LiteralExpr { value }
+impl Literal {
+    pub fn new(value: String) -> Literal {
+        Literal { value }
     }
 }

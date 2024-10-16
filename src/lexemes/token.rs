@@ -1,6 +1,4 @@
-use std::borrow::Borrow;
-
-use crate::ast::{expr::Expr, literal::LiteralExpr};
+use crate::ast::literal::Literal;
 
 use super::token_type::TokenType;
 
@@ -8,12 +6,12 @@ use super::token_type::TokenType;
 pub struct Token {
     pub id: TokenType,
     pub lexeme: String,
-    literal: Option<LiteralExpr>,
+    literal: Option<Literal>,
     line: usize,
 }
 
 impl Token {
-    pub fn new(id: TokenType, lexeme: String, line: usize, literal: Option<LiteralExpr>) -> Token {
+    pub fn new(id: TokenType, lexeme: String, line: usize, literal: Option<Literal>) -> Token {
         Token {
             id,
             lexeme,

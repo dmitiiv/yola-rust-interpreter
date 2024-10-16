@@ -1,9 +1,9 @@
-use super::{binary::BinaryExpr, literal::LiteralExpr, unary::UnaryExpr};
+use super::{binary::Binary, literal::Literal, unary::Unary};
 
 #[derive(Debug)]
 
 pub enum Expr {
-    Binary(BinaryExpr),
-    Unary(UnaryExpr),
-    Literal(LiteralExpr),
+    BinaryExpr(Binary),
+    UnaryExpr(Unary),
+    LiteralExpr(Literal),
 }

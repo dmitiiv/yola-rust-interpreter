@@ -1,5 +1,4 @@
-use crate::ast::expr::Expr;
-use crate::ast::literal::LiteralExpr;
+use crate::ast::literal::Literal;
 use crate::lexemes::{token::Token, token_type::TokenType};
 use crate::report::report::{ErrorTypes, Report};
 use crate::utils::string_utils::{CharAt, Slice};
@@ -140,7 +139,7 @@ impl Scanner {
         self.create_token(id, None);
     }
 
-    fn create_token(&mut self, id: TokenType, literal: Option<LiteralExpr>) {
+    fn create_token(&mut self, id: TokenType, literal: Option<Literal>) {
         let text = self.source.slice(self.start, self.current);
 
         let token = Token::new(id, text, self.line, literal);
@@ -216,7 +215,7 @@ impl Scanner {
         // self.add_token(TokenType::NUMBER);
         self.create_token(
             TokenType::NUMBER,
-            Some(LiteralExpr::new(value)),
+            Some(Literal::new(value)),
             // Some(Literal::new(value.parse::<f64>().unwrap())),
         );
     }
