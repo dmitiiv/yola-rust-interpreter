@@ -1,12 +1,12 @@
 use super::expr::Expr;
 
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct Group {
-    expression: Box<Expr>,
+    expression: Box<dyn Expr>,
 }
 
 impl Group {
-    pub fn new(&self, expression: Expr) -> Group {
+    pub fn new(&self, expression: dyn Expr) -> Group {
         Group {
             expression: Box::new(expression),
         }
