@@ -1,4 +1,4 @@
-use super::expr::Expr;
+use crate::ast::expr::Expr;
 
 pub struct Printer {}
 

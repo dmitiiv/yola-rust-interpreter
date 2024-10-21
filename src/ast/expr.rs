@@ -1,24 +1,29 @@
+use super::{binary::Binary, group::Group, unary::Unary};
+
 pub enum Expressions {
     BinaryExpr(Binary),
     UnaryExpr(Unary),
-    // LiteralExpr(Literal),
+    LiteralExpr(Group),
 }
 
-use super::{binary::Binary, unary::Unary};
-
 pub trait Visitor {
-    fn visit_binary(&mut self, expr: Binary);
-    fn visit_unary(&mut self, expr: Unary);
+    fn visit_binary(&mut self, expr: &Binary);
+    fn visit_unary(&mut self, expr: &Unary);
+    fn visit_group(&mut self, expr: &Group);
 }
 
 pub struct ExprVisitor {}
 
-impl ExprVisitor {
-    fn binary_visitor(binary: Binary) {
+impl Visitor for ExprVisitor {
+    fn visit_binary(&mut self, binary: &Binary) {
         println!("Binary visitor")
     }
 
-    fn unary_visitor(binary: Binary) {
+    fn visit_unary(&mut self, unary: &Unary) {
+        println!("Unary visitor")
+    }
+
+    fn visit_group(&mut self, group: &Group) {
         println!("Unary visitor")
     }
 }
@@ -29,17 +34,4 @@ pub trait Expr {
 
     // visitor pattern
     fn accept(&mut self, visitor: &mut dyn Visitor);
-}
-
-#[derive(Debug)]
-pub struct Group {
-    expression: Box<Expr>,
-}
-
-impl Group {
-    pub fn new(&self, expression: Expr) -> Group {
-        Group {
-            expression: Box::new(expression),
-        }
-    }
 }

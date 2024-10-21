@@ -1,14 +1,14 @@
-use super::expr::Expr;
+use super::expr::{Expr, Expressions, Visitor};
 
-// #[derive(Debug)]
 pub struct Group {
-    expression: Box<dyn Expr>,
+    expression: Box<dyn Expr<Parent = Expressions>>,
 }
 
-impl Group {
-    pub fn new(&self, expression: dyn Expr) -> Group {
-        Group {
-            expression: Box::new(expression),
-        }
+impl Expr for Group {
+    // refer to Self for inheritance purposes
+    type Parent = Self;
+
+    fn accept(&mut self, visitor: &mut dyn Visitor) {
+        visitor.visit_group(self)
     }
 }
