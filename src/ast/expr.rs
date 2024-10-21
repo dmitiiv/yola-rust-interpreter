@@ -30,3 +30,16 @@ pub trait Expr {
     // visitor pattern
     fn accept(&mut self, visitor: &mut dyn Visitor);
 }
+
+#[derive(Debug)]
+pub struct Group {
+    expression: Box<Expr>,
+}
+
+impl Group {
+    pub fn new(&self, expression: Expr) -> Group {
+        Group {
+            expression: Box::new(expression),
+        }
+    }
+}
