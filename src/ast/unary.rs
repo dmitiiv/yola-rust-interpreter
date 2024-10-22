@@ -1,18 +1,17 @@
 use crate::lexemes::token::Token;
 
-use super::expr::Expr;
+use super::expr::{Expr, Expressions, Visitor};
 
-#[derive(Debug)]
 pub struct Unary {
     operator: Box<Token>,
-    right: Box<Expr>,
+    right: Box<dyn Expr<Parent = Expressions>>,
 }
 
-impl Unary {
-    pub fn new(&self, operator: Token, right: Expr) -> Unary {
-        Unary {
-            operator: Box::new(operator),
-            right: Box::new(right),
-        }
+impl Expr for Unary {
+    // refer to Self for inheritance purposes
+    type Parent = Self;
+
+    fn accept(&mut self, visitor: &mut dyn Visitor) {
+        visitor.visit_unary(self)
     }
 }

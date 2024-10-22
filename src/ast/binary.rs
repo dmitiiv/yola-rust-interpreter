@@ -1,20 +1,18 @@
 use crate::lexemes::token::Token;
 
-use super::expr::Expr;
+use super::expr::{Expr, Expressions, Visitor};
 
-#[derive(Debug)]
 pub struct Binary {
-    left: Box<Expr>,
+    left: Box<dyn Expr<Parent = Expressions>>,
     operator: Box<Token>,
-    right: Box<Expr>,
+    right: Box<dyn Expr<Parent = Expressions>>,
 }
 
-impl Binary {
-    pub fn new(&self, left: Expr, operator: Token, right: Expr) -> Binary {
-        Binary {
-            left: Box::new(left),
-            operator: Box::new(operator),
-            right: Box::new(right),
-        }
+impl Expr for Binary {
+    // refer to Self for inheritance purposes
+    type Parent = Self;
+
+    fn accept(&mut self, visitor: &mut dyn Visitor) {
+        visitor.visit_binary(self)
     }
 }
