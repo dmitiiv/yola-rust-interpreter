@@ -1,12 +1,12 @@
-use crate::ast::expr::{Expr, Expressions, Visitor};
+use crate::ast::expr::{Expr, Visitor};
 
 pub struct AstPrinter {}
 
-impl AstPrinter {
-    fn print(&mut self, expr: Box<&dyn Expr<Parent = Expressions>>) {
-        expr.accept(self);
-    }
-}
+// impl AstPrinter {
+//     fn print(&mut self, expr: &dyn Expr<Parent = Self>) {
+//         expr.accept(self);
+//     }
+// }
 
 // impl Expr for AstPrinter {
 //     type Parent = Self;

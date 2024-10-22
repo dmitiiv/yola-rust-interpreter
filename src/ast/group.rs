@@ -1,7 +1,7 @@
-use super::expr::{Expr, Expressions, Visitor};
+use super::expr::{Expr, Visitor};
 
 pub struct Group {
-    expression: Box<dyn Expr<Parent = Expressions>>,
+    expression: Box<dyn Expr<Parent = Self>>,
 }
 
 impl Expr for Group {
