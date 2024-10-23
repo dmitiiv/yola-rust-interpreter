@@ -15,15 +15,15 @@ pub trait Visitor {
 pub struct ExprVisitor {}
 
 impl Visitor for ExprVisitor {
-    fn visit_binary(&mut self, binary: &Binary) {
+    fn visit_binary(&mut self, expr: &Binary) {
         println!("Binary visitor")
     }
 
-    fn visit_unary(&mut self, unary: &Unary) {
+    fn visit_unary(&mut self, expr: &Unary) {
         println!("Unary visitor")
     }
 
-    fn visit_group(&mut self, group: &Group) {
+    fn visit_group(&mut self, expr: &Group) {
         println!("Unary visitor")
     }
 }

@@ -1,11 +1,11 @@
 use crate::lexemes::token::Token;
 
-use super::expr::{Expr, Expressions, Visitor};
+use super::expr::{Expr, Visitor};
 
 pub struct Binary {
-    left: Box<dyn Expr<Parent = Expressions>>,
+    left: Box<dyn Expr<Parent = Self>>,
     operator: Box<Token>,
-    right: Box<dyn Expr<Parent = Expressions>>,
+    right: Box<dyn Expr<Parent = Self>>,
 }
 
 impl Expr for Binary {
