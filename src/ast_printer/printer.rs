@@ -1,4 +1,4 @@
-use crate::ast::expr::{Expr, Visitor};
+use crate::ast::expr::Visitor;
 
 pub struct AstPrinter {}
 
@@ -26,6 +26,10 @@ impl Visitor for AstPrinter {
     }
 
     fn visit_group(&mut self, expr: &crate::ast::group::Group) {
+        todo!()
+    }
+
+    fn visit_literal(&mut self, expr: &crate::ast::literal::Literal) {
         todo!()
     }
 }
