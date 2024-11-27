@@ -34,9 +34,6 @@ impl Visitor for ExprVisitor {
 }
 
 pub trait Expr {
-    // need for inheritance
-    type Parent: Expr;
-
     // visitor pattern
     fn accept(&mut self, visitor: &mut dyn Visitor);
 }

@@ -12,9 +12,6 @@ impl Literal {
 }
 
 impl Expr for Literal {
-    // refer to Self for inheritance purposes
-    type Parent = Self;
-
     fn accept(&mut self, visitor: &mut dyn Visitor) {
         visitor.visit_literal(self)
     }
