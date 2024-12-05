@@ -5,7 +5,7 @@ pub struct Group {
 }
 
 impl Expr for Group {
-    fn accept(&mut self, visitor: &mut dyn Visitor) {
+    fn accept(&mut self, visitor: &dyn Visitor) {
         visitor.visit_group(self)
     }
 }

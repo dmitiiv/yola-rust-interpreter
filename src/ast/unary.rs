@@ -8,7 +8,7 @@ pub struct Unary {
 }
 
 impl Expr for Unary {
-    fn accept(&mut self, visitor: &mut dyn Visitor) {
+    fn accept(&mut self, visitor: &dyn Visitor) {
         visitor.visit_unary(self)
     }
 }
