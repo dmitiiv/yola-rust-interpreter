@@ -7,7 +7,20 @@ impl AstPrinter {
         expr.accept(self);
     }
 
-    fn parenthesize(name: &str, exprs: Vec<Box<dyn Expr>>) {}
+    fn parenthesize(name: &str, exprs: Vec<Box<dyn Expr>>) -> String {
+        let mut builder = String::new();
+
+        builder.push('(');
+        builder.push_str(name);
+
+        for expr in exprs {
+            builder.push(' ');
+            // builder.push_str(&expr.accept(self));
+            builder.push('!');
+        }
+
+        builder
+    }
 }
 
 impl Visitor for AstPrinter {
