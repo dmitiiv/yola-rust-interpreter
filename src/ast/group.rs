@@ -1,11 +1,11 @@
 use super::expr::{Expr, Visitor};
 
-pub struct Group {
-    expression: Box<dyn Expr>,
+pub struct Group<T> {
+    expression: Box<dyn Expr<T>>,
 }
 
-impl Expr for Group {
-    fn accept(&mut self, visitor: &dyn Visitor) {
+impl<T> Expr<T> for Group<T> {
+    fn accept(&mut self, visitor: &dyn Visitor<&str>) -> T {
         visitor.visit_group(self)
     }
 }
