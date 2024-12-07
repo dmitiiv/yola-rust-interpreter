@@ -11,8 +11,8 @@ impl Literal {
     }
 }
 
-impl Expr<&str> for Literal {
-    fn accept(&mut self, visitor: &dyn Visitor<&'static str>) -> &'static str {
+impl<T> Expr<T> for Literal {
+    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T {
         visitor.visit_literal(self)
     }
 }
