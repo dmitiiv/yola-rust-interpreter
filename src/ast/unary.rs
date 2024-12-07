@@ -2,13 +2,13 @@ use crate::lexemes::token::Token;
 
 use super::expr::{Expr, Visitor};
 
-pub struct Unary {
+pub struct Unary<T> {
     operator: Box<Token>,
-    right: Box<dyn Expr>,
+    right: Box<dyn Expr<T>>,
 }
 
-impl Expr for Unary {
-    fn accept(&mut self, visitor: &dyn Visitor) {
+impl<T> Expr<T> for Unary<T> {
+    fn accept(&mut self, visitor: &dyn Visitor<&str>) -> T {
         visitor.visit_unary(self)
     }
 }
