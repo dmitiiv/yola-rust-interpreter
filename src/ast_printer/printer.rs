@@ -7,7 +7,7 @@ impl AstPrinter {
         expr.accept(self);
     }
 
-    fn parenthesize(&self, name: &str, exprs: Vec<Box<dyn Expr<&'static str>>>) -> String {
+    fn parenthesize(&self, name: &str, exprs: Vec<Box<&mut dyn Expr<&'static str>>>) -> String {
         let mut builder = String::new();
 
         builder.push('(');
@@ -16,14 +16,13 @@ impl AstPrinter {
         for expr in exprs {
             builder.push(' ');
             builder.push_str(&expr.accept(self));
-            // builder.push('!');
         }
 
         builder
     }
 }
 
-impl Visitor<&str> for AstPrinter {
+impl Visitor<&'static str> for AstPrinter {
     fn visit_binary(&self, expr: &crate::ast::binary::Binary<&str>) -> &'static str {
         " "
     }

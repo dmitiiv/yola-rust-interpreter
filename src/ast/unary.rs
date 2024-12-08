@@ -8,7 +8,7 @@ pub struct Unary<T> {
 }
 
 impl<T> Expr<T> for Unary<T> {
-    fn accept(&mut self, visitor: &dyn Visitor<&str>) -> T {
+    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T {
         visitor.visit_unary(self)
     }
 }

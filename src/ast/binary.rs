@@ -9,7 +9,7 @@ pub struct Binary<T> {
 }
 
 impl<T> Expr<T> for Binary<T> {
-    fn accept(&mut self, visitor: &dyn Visitor<&'static str>) -> T {
+    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T {
         visitor.visit_binary(self)
     }
 }

@@ -15,29 +15,25 @@ pub trait Visitor<T> {
 
 pub struct ExprVisitor {}
 
-impl Visitor<&str> for ExprVisitor {
-    fn visit_binary(&self, expr: &Binary<&str>) -> &'static str {
+impl Visitor<()> for ExprVisitor {
+    fn visit_binary(&self, expr: &Binary<()>) {
         println!("Binary visitor");
-        "binary"
     }
 
-    fn visit_unary(&self, expr: &Unary<&str>) -> &'static str {
+    fn visit_unary(&self, expr: &Unary<()>) {
         println!("Unary visitor");
-        "unary"
     }
 
-    fn visit_group(&self, expr: &Group<&str>) -> &'static str {
+    fn visit_group(&self, expr: &Group<()>) {
         println!("Unary visitor");
-        "group"
     }
 
-    fn visit_literal(&self, expr: &Literal) -> &'static str {
+    fn visit_literal(&self, expr: &Literal) {
         println!("Unary literal");
-        "literal"
     }
 }
 
 pub trait Expr<T> {
     // visitor pattern
-    fn accept(&mut self, visitor: &dyn Visitor<&'static str>) -> T;
+    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T;
 }

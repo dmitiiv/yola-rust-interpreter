@@ -5,7 +5,7 @@ pub struct Group<T> {
 }
 
 impl<T> Expr<T> for Group<T> {
-    fn accept(&mut self, visitor: &dyn Visitor<&str>) -> T {
+    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T {
         visitor.visit_group(self)
     }
 }
