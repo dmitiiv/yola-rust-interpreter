@@ -1,11 +1,5 @@
 use super::{binary::Binary, group::Group, literal::Literal, unary::Unary};
 
-// pub enum Expressions {
-//     BinaryExpr(Binary),
-//     UnaryExpr(Unary),
-//     LiteralExpr(Group),
-// }
-
 pub trait Visitor<T> {
     fn visit_binary(&self, expr: &Binary<T>) -> T;
     fn visit_unary(&self, expr: &Unary<T>) -> T;
@@ -35,5 +29,5 @@ impl Visitor<()> for ExprVisitor {
 
 pub trait Expr<T> {
     // visitor pattern
-    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T;
+    fn accept(&self, visitor: &dyn Visitor<T>) -> T;
 }
