@@ -2,6 +2,7 @@ mod ast;
 mod ast_printer;
 mod lang;
 mod lexemes;
+mod parser;
 mod report;
 mod scanner;
 mod utils;
