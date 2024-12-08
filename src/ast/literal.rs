@@ -12,7 +12,7 @@ impl Literal {
 }
 
 impl<T> Expr<T> for Literal {
-    fn accept(&mut self, visitor: &dyn Visitor<T>) -> T {
+    fn accept(&self, visitor: &dyn Visitor<T>) -> T {
         visitor.visit_literal(self)
     }
 }
