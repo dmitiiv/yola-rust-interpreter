@@ -1,7 +1,4 @@
-use crate::ast::{
-    binary::Binary,
-    expr::{self, Expr, Visitor},
-};
+use crate::ast::expr::{self, Expr, Visitor};
 
 pub struct AstPrinter {}
 
@@ -26,22 +23,26 @@ impl AstPrinter {
 }
 
 impl<'a> Visitor<String> for AstPrinter {
-    fn visit_binary(&self, binary: &Binary<String>) -> String {
+    fn visit_binary(&self, binary: &crate::ast::binary::Binary<String>) -> String {
         self.parenthesize(
             &binary.operator.lexeme,
             vec![binary.left.clone(), binary.right.clone()],
         )
     }
 
-    fn visit_unary(&self, expr: &crate::ast::unary::Unary<String>) -> String {
-        String::new()
+    fn visit_unary(&self, unary: &crate::ast::unary::Unary<String>) -> String {
+        self.parenthesize(&unary.operator.lexeme, vec![unary.right.clone()])
     }
 
-    fn visit_group(&self, expr: &crate::ast::group::Group<String>) -> String {
-        String::new()
+    fn visit_group(&self, group: &crate::ast::group::Group<String>) -> String {
+        self.parenthesize("group", vec![group.expression.clone()])
     }
 
-    fn visit_literal(&self, expr: &crate::ast::literal::Literal) -> String {
-        String::new()
+    fn visit_literal(&self, literal: &crate::ast::literal::Literal) -> String {
+        if literal.value.is_empty() {
+            return "nil".to_string();
+        }
+
+        literal.value.to_owned()
     }
 }
