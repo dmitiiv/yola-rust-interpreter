@@ -2,7 +2,7 @@ use super::expr::{Expr, Visitor};
 
 #[derive(Debug)]
 pub struct Literal {
-    value: String,
+    pub value: String,
 }
 
 impl Literal {
