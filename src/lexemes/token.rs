@@ -2,7 +2,7 @@ use crate::ast::literal::Literal;
 
 use super::token_type::TokenType;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Token {
     pub id: TokenType,
     pub lexeme: String,
