@@ -8,6 +8,16 @@ pub struct Binary<'a, T> {
     pub right: Box<&'a dyn Expr<T>>,
 }
 
+impl<'a, T> Binary<'a, T> {
+    pub fn new(left: Box<&'a dyn Expr<T>>, operator: Token, right: Box<&'a dyn Expr<T>>) -> Self {
+        Self {
+            left,
+            operator,
+            right,
+        }
+    }
+}
+
 impl<'a, T> Expr<T> for Binary<'a, T> {
     fn accept(&self, visitor: &dyn Visitor<T>) -> T {
         visitor.visit_binary(self)

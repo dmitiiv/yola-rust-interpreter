@@ -1,6 +1,6 @@
 use super::expr::{Expr, Visitor};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Literal {
     pub value: String,
 }
