@@ -1,5 +1,6 @@
-use super::{binary::Binary, group::Group, literal::Literal, unary::Unary};
+use crate::lexemes::token::Token;
 
+use super::{binary::Binary, group::Group, literal::Literal, unary::Unary};
 pub trait Visitor<T> {
     fn visit_binary(&self, expr: &Binary<T>) -> T;
     fn visit_unary(&self, expr: &Unary<T>) -> T;

@@ -25,12 +25,12 @@ impl Parser {
         Self { tokens, current: 0 }
     }
 
-    fn expression<'a, T>(&mut self) -> Box<&dyn Expr<T>> {
+    fn expression<'a, T: 'a>(&mut self) -> Box<dyn Expr<T> + 'a> {
         self.equality::<T>()
     }
 
-    fn equality<'a, T>(&mut self) -> &dyn Expr<T> {
-        let expr = self.comaprison::<T>();
+    fn equality<'a, T: 'a>(&mut self) -> Box<dyn Expr<T> + 'a> {
+        let mut expr = self.comaprison::<T>();
 
         while self.match_tokens(vec![TokenType::BANG_EQUAL, TokenType::EQUAL_EQUAL]) {
             let operator = self.previous();
@@ -44,7 +44,7 @@ impl Parser {
         expr
     }
 
-    fn comaprison<'a, T>(&mut self) -> Box<&dyn Expr<T>> {}
+    fn comaprison<'a, T>(&mut self) -> Box<dyn Expr<T> + 'a> {}
 
     fn match_tokens(&mut self, types: Vec<TokenType>) -> bool {
         for token_type in types {
