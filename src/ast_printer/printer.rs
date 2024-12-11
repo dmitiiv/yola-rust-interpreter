@@ -7,7 +7,7 @@ impl AstPrinter {
         expr.accept(self);
     }
 
-    fn parenthesize(&self, name: &str, exprs: Vec<Box<dyn Expr<String>>>) -> String {
+    fn parenthesize(&self, name: &str, exprs: Vec<&Box<dyn Expr<String>>>) -> String {
         let mut builder = String::new();
 
         builder.push('(');
@@ -24,15 +24,15 @@ impl AstPrinter {
 
 impl<'a> Visitor<String> for AstPrinter {
     fn visit_binary(&self, binary: &crate::ast::binary::Binary<String>) -> String {
-        self.parenthesize(&binary.operator.lexeme, vec![binary.left, binary.right])
+        self.parenthesize(&binary.operator.lexeme, vec![&binary.left, &binary.right])
     }
 
     fn visit_unary(&self, unary: &crate::ast::unary::Unary<String>) -> String {
-        self.parenthesize(&unary.operator.lexeme, vec![unary.right])
+        self.parenthesize(&unary.operator.lexeme, vec![&unary.right])
     }
 
     fn visit_group(&self, group: &crate::ast::group::Group<String>) -> String {
-        self.parenthesize("group", vec![group.expression])
+        self.parenthesize("group", vec![&group.expression])
     }
 
     fn visit_literal(&self, literal: &crate::ast::literal::Literal) -> String {

@@ -2,7 +2,7 @@ use crate::lexemes::token::Token;
 
 use super::expr::{Expr, Visitor};
 
-pub struct Binary<'a, T: 'a> {
+pub struct Binary<'a, T: 'static> {
     pub left: Box<dyn Expr<T> + 'a>,
     pub operator: Token,
     pub right: Box<dyn Expr<T> + 'a>,
