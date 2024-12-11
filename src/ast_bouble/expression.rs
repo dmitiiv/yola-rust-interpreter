@@ -1,14 +1,24 @@
 use crate::lexemes::token::Token;
 
-enum Expression {
+pub enum Expression {
     Binary(Box<BinaryExp>),
     Unary(Box<UnaryExp>),
     Group(Box<GroupExp>),
 }
-struct BinaryExp {
-    left: Box<Expression>,
-    operator: Token,
-    right: Box<Expression>,
+pub struct BinaryExp {
+    pub left: Box<Expression>,
+    pub operator: Token,
+    pub right: Box<Expression>,
+}
+
+impl BinaryExp {
+    pub fn new(left: Box<Expression>, operator: Token, right: Box<Expression>) -> BinaryExp {
+        BinaryExp {
+            left,
+            operator,
+            right,
+        }
+    }
 }
 
 impl<T> Expr<T> for BinaryExp {
@@ -20,6 +30,12 @@ impl<T> Expr<T> for BinaryExp {
 pub struct UnaryExp {
     pub operator: Token,
     pub right: Box<Expression>,
+}
+
+impl UnaryExp {
+    pub fn new(operator: Token, right: Box<Expression>) -> UnaryExp {
+        UnaryExp { operator, right }
+    }
 }
 
 impl<T> Expr<T> for UnaryExp {
