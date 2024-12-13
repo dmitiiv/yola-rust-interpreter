@@ -15,7 +15,7 @@ use crate::{
     },
 };
 
-use super::expression::Expression;
+use super::expression::{Expression, GroupExp, LiteralExp, UnaryExp};
 
 struct Parser {
     pub tokens: Vec<Token>,
@@ -46,7 +46,103 @@ impl Parser {
         expr
     }
 
-    fn comaprison<T>(&mut self) -> Box<T> {}
+    fn comaprison(&mut self) -> Box<Expression> {
+        let mut expr = self.term();
+
+        while self.match_tokens(vec![
+            TokenType::GREATER,
+            TokenType::GREATER_EQUAL,
+            TokenType::LESS,
+            TokenType::LESS_EQUAL,
+        ]) {
+            let operator = self.previous();
+            let right = self.term();
+
+            let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
+
+            expr = Box::new(temp_expr);
+        }
+
+        expr
+    }
+
+    fn term(&mut self) -> Box<Expression> {
+        let mut expr = self.factor();
+
+        while self.match_tokens(vec![TokenType::MINUS, TokenType::PLUS]) {
+            let operator = self.previous();
+            let right = self.factor();
+            let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
+
+            expr = Box::new(temp_expr);
+        }
+
+        expr
+    }
+
+    fn factor(&mut self) -> Box<Expression> {
+        let mut expr = self.unary();
+
+        while self.match_tokens(vec![TokenType::SLASH, TokenType::STAR]) {
+            let operator = self.previous();
+            let right = self.unary();
+            let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
+
+            expr = Box::new(temp_expr);
+        }
+
+        expr
+    }
+
+    fn unary(&mut self) -> Box<Expression> {
+        if self.match_tokens(vec![TokenType::SLASH, TokenType::STAR]) {
+            let operator = self.previous();
+            let right = self.unary();
+            let temp_exp = Expression::Unary(Box::new(UnaryExp::new(operator, right)));
+            return Box::new(temp_exp);
+        }
+
+        self.primary()
+    }
+
+    fn primary(&mut self) -> Box<Expression> {
+        if self.match_tokens(vec![TokenType::FALSE]) {
+            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+                "false".to_string(),
+            ))));
+        }
+
+        if self.match_tokens(vec![TokenType::TRUE]) {
+            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+                "true".to_string(),
+            ))));
+        }
+
+        if self.match_tokens(vec![TokenType::NIL]) {
+            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+                "null".to_string(),
+            ))));
+        }
+
+        if self.match_tokens(vec![TokenType::STRING, TokenType::NUMBER]) {
+            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+                self.previous().lexeme,
+            ))));
+        }
+
+        if self.match_tokens(vec![TokenType::LEFT_PAREN]) {
+            let expr = self.expression();
+            Parser::consume(TokenType::RIGHT_PAREN, "xpect ')' after expression.");
+
+            return Box::new(Expression::Group(Box::new(GroupExp::new(expr))));
+        }
+
+        Box::new(Expression::Literal(Box::new(LiteralExp::new(
+            "null".to_string(),
+        ))))
+    }
+
+    fn consume(token_type: TokenType, message: &str) {}
 
     fn match_tokens(&mut self, types: Vec<TokenType>) -> bool {
         for token_type in types {
