@@ -4,6 +4,18 @@ pub enum Expression {
     Binary(Box<BinaryExp>),
     Unary(Box<UnaryExp>),
     Group(Box<GroupExp>),
+    Literal(Box<LiteralExp>),
+}
+
+impl<T> Expr<T> for Expression {
+    fn accept(&self, visitor: &dyn Visitor<T>) -> T {
+        match self {
+            Expression::Literal(literal) => literal.accept(visitor),
+            Expression::Binary(binary) => binary.accept(visitor),
+            Expression::Unary(unary) => unary.accept(visitor),
+            Expression::Group(group) => group.accept(visitor),
+        }
+    }
 }
 pub struct BinaryExp {
     pub left: Box<Expression>,

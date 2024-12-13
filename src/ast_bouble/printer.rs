@@ -15,7 +15,7 @@ impl AstPrinter {
 
         for expr in exprs {
             builder.push(' ');
-            builder.push_str(expr.accept(self));
+            builder.push_str(expr.accept(&self));
         }
 
         builder

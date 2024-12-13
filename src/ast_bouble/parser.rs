@@ -38,9 +38,9 @@ impl Parser {
             let operator = self.previous();
             let right = self.comaprison();
 
-            let temp_expr = BinaryExp::new(expr, operator, right);
+            let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
 
-            expr = Box::new(temp_expr);
+            expr = Box::new(temp_expr)
         }
 
         expr
