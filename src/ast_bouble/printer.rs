@@ -15,14 +15,14 @@ impl AstPrinter {
 
         for expr in exprs {
             builder.push(' ');
-            builder.push_str(expr.accept(&self));
+            builder.push_str(&expr.accept(self));
         }
 
         builder
     }
 }
 
-impl<'a> Visitor<String> for AstPrinter {
+impl Visitor<String> for AstPrinter {
     fn visit_binary(&self, binary: &crate::ast_bouble::expression::BinaryExp) -> String {
         self.parenthesize(&binary.operator.lexeme, vec![&binary.left, &binary.right])
     }
