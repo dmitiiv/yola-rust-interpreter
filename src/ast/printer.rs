@@ -1,4 +1,4 @@
-use crate::ast_bouble::expression::{self, Expr, Expression, Visitor};
+use crate::ast::expression::{self, Expr, Expression, Visitor};
 
 pub struct AstPrinter {}
 
@@ -23,19 +23,19 @@ impl AstPrinter {
 }
 
 impl Visitor<String> for AstPrinter {
-    fn visit_binary(&self, binary: &crate::ast_bouble::expression::BinaryExp) -> String {
+    fn visit_binary(&self, binary: &crate::ast::expression::BinaryExp) -> String {
         self.parenthesize(&binary.operator.lexeme, vec![&binary.left, &binary.right])
     }
 
-    fn visit_unary(&self, unary: &crate::ast_bouble::expression::UnaryExp) -> String {
+    fn visit_unary(&self, unary: &crate::ast::expression::UnaryExp) -> String {
         self.parenthesize(&unary.operator.lexeme, vec![&unary.right])
     }
 
-    fn visit_group(&self, group: &crate::ast_bouble::expression::GroupExp) -> String {
+    fn visit_group(&self, group: &crate::ast::expression::GroupExp) -> String {
         self.parenthesize("group", vec![&group.expression])
     }
 
-    fn visit_literal(&self, literal: &crate::ast_bouble::expression::LiteralExp) -> String {
+    fn visit_literal(&self, literal: &crate::ast::expression::LiteralExp) -> String {
         if literal.value.is_empty() {
             return "nil".to_string();
         }

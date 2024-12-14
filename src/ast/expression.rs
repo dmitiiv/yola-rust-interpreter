@@ -72,6 +72,7 @@ impl<T> Expr<T> for GroupExp {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct LiteralExp {
     pub value: String,
 }
