@@ -1,17 +1,16 @@
-use crate::ast::literal::Literal;
-
 use super::token_type::TokenType;
+use crate::ast::expression::LiteralExp;
 
 #[derive(Debug, Clone)]
 pub struct Token {
     pub id: TokenType,
     pub lexeme: String,
-    literal: Option<Literal>,
+    literal: Option<LiteralExp>,
     line: usize,
 }
 
 impl Token {
-    pub fn new(id: TokenType, lexeme: String, line: usize, literal: Option<Literal>) -> Token {
+    pub fn new(id: TokenType, lexeme: String, line: usize, literal: Option<LiteralExp>) -> Token {
         Token {
             id,
             lexeme,
