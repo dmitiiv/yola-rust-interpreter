@@ -7,6 +7,8 @@
 // unary -> ( "!" | "-" ) unary | primary ;
 // primary →> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
 
+use std::fmt::Error;
+
 use crate::{
     ast::expression::BinaryExp,
     lexemes::{token::Token, token_type::TokenType},
@@ -129,7 +131,7 @@ impl Parser {
 
         if self.match_tokens(vec![TokenType::LEFT_PAREN]) {
             let expr = self.expression();
-            Parser::consume(TokenType::RIGHT_PAREN, "xpect ')' after expression.");
+            let _ = self.consume(TokenType::RIGHT_PAREN, "xpect ')' after expression.");
 
             return Box::new(Expression::Group(Box::new(GroupExp::new(expr))));
         }
@@ -139,7 +141,13 @@ impl Parser {
         ))))
     }
 
-    fn consume(token_type: TokenType, message: &str) {}
+    fn consume(&mut self, token_type: TokenType, message: &str) -> Result<Token, Error> {
+        if self.check(token_type) {
+            return Ok(self.advance());
+        }
+
+        panic!("Token {:?}; Message {}", self.peek(), message);
+    }
 
     fn match_tokens(&mut self, types: Vec<TokenType>) -> bool {
         for token_type in types {

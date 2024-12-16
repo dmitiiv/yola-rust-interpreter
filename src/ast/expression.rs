@@ -1,5 +1,6 @@
 use crate::lexemes::token::Token;
 
+#[warn(dead_code)]
 pub enum Expression {
     Binary(Box<BinaryExp>),
     Unary(Box<UnaryExp>),
