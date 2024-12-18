@@ -194,4 +194,28 @@ impl Parser {
             None => Token::new(TokenType::EOF, String::new(), self.current, None),
         }
     }
+
+    fn synchronise(&mut self) {
+        self.advance();
+
+        while !self.is_at_end() {
+            if self.previous().id == TokenType::SEMICOLON {
+                return;
+            }
+
+            match self.peek().id {
+                TokenType::CLASS
+                | TokenType::FUNC
+                | TokenType::VAR
+                | TokenType::FOR
+                | TokenType::IF
+                | TokenType::WHILE
+                | TokenType::PRINT
+                | TokenType::RETURN => return,
+                _ => print!(""),
+            }
+
+            self.advance();
+        }
+    }
 }

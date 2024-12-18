@@ -34,6 +34,7 @@ pub enum TokenType {
     FOR,
     IF,
     NIL,
+    WHILE,
     OR,
     PRINT,
     RETURN,
