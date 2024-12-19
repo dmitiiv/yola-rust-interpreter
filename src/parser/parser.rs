@@ -11,6 +11,7 @@ use std::fmt::Error;
 
 use crate::{
     ast::expression::BinaryExp,
+    errors::YolaParseError,
     lexemes::{token::Token, token_type::TokenType},
 };
 
@@ -101,44 +102,54 @@ impl Parser {
             return Box::new(temp_exp);
         }
 
-        self.primary()
+        self.primary().unwrap()
     }
 
-    fn primary(&mut self) -> Box<Expression> {
+    fn primary(&mut self) -> Result<Box<Expression>, YolaParseError> {
         if self.match_tokens(vec![TokenType::FALSE]) {
-            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+            let res_expr = Box::new(Expression::Literal(Box::new(LiteralExp::new(
                 "false".to_string(),
             ))));
+
+            return Ok(res_expr);
         }
 
         if self.match_tokens(vec![TokenType::TRUE]) {
-            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+            let res_expr = Box::new(Expression::Literal(Box::new(LiteralExp::new(
                 "true".to_string(),
             ))));
+
+            return Ok(res_expr);
         }
 
         if self.match_tokens(vec![TokenType::NIL]) {
-            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+            let res_expr = Box::new(Expression::Literal(Box::new(LiteralExp::new(
                 "null".to_string(),
             ))));
+
+            return Ok(res_expr);
         }
 
         if self.match_tokens(vec![TokenType::STRING, TokenType::NUMBER]) {
-            return Box::new(Expression::Literal(Box::new(LiteralExp::new(
+            let res_expr = Box::new(Expression::Literal(Box::new(LiteralExp::new(
                 self.previous().lexeme,
             ))));
+
+            return Ok(res_expr);
         }
 
         if self.match_tokens(vec![TokenType::LEFT_PAREN]) {
             let expr = self.expression();
             let _ = self.consume(TokenType::RIGHT_PAREN, "xpect ')' after expression.");
 
-            return Box::new(Expression::Group(Box::new(GroupExp::new(expr))));
+            let res_expr = Box::new(Expression::Group(Box::new(GroupExp::new(expr))));
+            return Ok(res_expr);
         }
 
-        Box::new(Expression::Literal(Box::new(LiteralExp::new(
-            "null".to_string(),
-        ))))
+        return Err(YolaParseError::new(format!(
+            "Expect expression {}",
+            self.peek().lexeme
+        )));
     }
 
     fn consume(&mut self, token_type: TokenType, message: &str) -> Result<Token, Error> {
