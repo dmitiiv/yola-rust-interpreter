@@ -1,4 +1,8 @@
-use crate::scanner::{scanner::Scanner, source_reader::SourceReader};
+use crate::{
+    ast::expression::Expression,
+    parser::{self, parser::Parser},
+    scanner::{scanner::Scanner, source_reader::SourceReader},
+};
 use std::io;
 
 pub struct Yola {
@@ -10,7 +14,7 @@ impl Yola {
         Yola { had_error: false }
     }
 
-    pub fn run_file(&self, path: &str) {
+    pub fn run_file(&mut self, path: &str) {
         let mut reader = SourceReader::new();
 
         if let Err(err) = reader.read_sources(path) {
@@ -19,12 +23,12 @@ impl Yola {
         }
 
         match reader.get_sources() {
-            Ok(_source) => Yola::run(_source),
+            Ok(_source) => self.run(_source),
             Err(err) => println!("Error - {:?}", err),
         };
     }
 
-    pub fn run_prompt(&self) {
+    pub fn run_prompt(&mut self) {
         loop {
             let mut input = String::new();
 
@@ -38,13 +42,25 @@ impl Yola {
                 break;
             }
 
-            Yola::run(trimmed_input.to_owned())
+            self.run(trimmed_input.to_owned())
         }
     }
 
-    pub fn run(source: String) {
+    pub fn run(&mut self, source: String) {
         let mut scanner = Scanner::new(source);
         let tokens = scanner.scan_tokens();
+        let mut parser = Parser::new(tokens.clone());
+
+        let mut expr: Box<Expression>;
+        if let Some(value) = parser.parse() {
+            expr = value;
+        } else {
+            self.set_error();
+        }
+
+        if self.had_error {
+            return;
+        }
 
         for token in tokens {
             println!("Token - {:?}", token);

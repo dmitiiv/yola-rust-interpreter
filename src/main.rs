@@ -20,7 +20,7 @@ use std::collections::HashMap;
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let yola = Yola::new();
+    let mut yola = Yola::new();
 
     if args.len() > 2 {
         println!("THere are more then 1 argument");
