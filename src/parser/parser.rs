@@ -12,6 +12,7 @@ use std::fmt::Error;
 use crate::{
     ast::expression::BinaryExp,
     errors::YolaParseError,
+    lang::yola::Yola,
     lexemes::{token::Token, token_type::TokenType},
 };
 
@@ -23,31 +24,38 @@ struct Parser {
 }
 
 impl Parser {
-    fn new(&mut self, tokens: Vec<Token>) -> Self {
+    pub fn new(&mut self, tokens: Vec<Token>) -> Self {
         Self { tokens, current: 0 }
     }
 
-    fn expression(&mut self) -> Box<Expression> {
+    pub fn parse(&mut self) -> Result<Box<Expression>, YolaParseError> {
+        match self.expression() {
+            Ok(expr) => Ok(expr),
+            Err(err) => Err(err),
+        }
+    }
+
+    fn expression(&mut self) -> Result<Box<Expression>, YolaParseError> {
         self.equality()
     }
 
-    fn equality(&mut self) -> Box<Expression> {
-        let mut expr = self.comaprison();
+    fn equality(&mut self) -> Result<Box<Expression>, YolaParseError> {
+        let mut expr = self.comaprison()?;
 
         while self.match_tokens(vec![TokenType::BANG_EQUAL, TokenType::EQUAL_EQUAL]) {
             let operator = self.previous();
-            let right = self.comaprison();
+            let right = self.comaprison()?;
 
             let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
 
             expr = Box::new(temp_expr)
         }
 
-        expr
+        Ok(expr)
     }
 
-    fn comaprison(&mut self) -> Box<Expression> {
-        let mut expr = self.term();
+    fn comaprison(&mut self) -> Result<Box<Expression>, YolaParseError> {
+        let mut expr = self.term()?;
 
         while self.match_tokens(vec![
             TokenType::GREATER,
@@ -56,53 +64,53 @@ impl Parser {
             TokenType::LESS_EQUAL,
         ]) {
             let operator = self.previous();
-            let right = self.term();
+            let right = self.term()?;
 
             let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
 
             expr = Box::new(temp_expr);
         }
 
-        expr
+        Ok(expr)
     }
 
-    fn term(&mut self) -> Box<Expression> {
-        let mut expr = self.factor();
+    fn term(&mut self) -> Result<Box<Expression>, YolaParseError> {
+        let mut expr = self.factor()?;
 
         while self.match_tokens(vec![TokenType::MINUS, TokenType::PLUS]) {
             let operator = self.previous();
-            let right = self.factor();
+            let right = self.factor()?;
             let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
 
             expr = Box::new(temp_expr);
         }
 
-        expr
+        Ok(expr)
     }
 
-    fn factor(&mut self) -> Box<Expression> {
-        let mut expr = self.unary();
+    fn factor(&mut self) -> Result<Box<Expression>, YolaParseError> {
+        let mut expr = self.unary()?;
 
         while self.match_tokens(vec![TokenType::SLASH, TokenType::STAR]) {
             let operator = self.previous();
-            let right = self.unary();
+            let right = self.unary()?;
             let temp_expr = Expression::Binary(Box::new(BinaryExp::new(expr, operator, right)));
 
             expr = Box::new(temp_expr);
         }
 
-        expr
+        Ok(expr)
     }
 
-    fn unary(&mut self) -> Box<Expression> {
+    fn unary(&mut self) -> Result<Box<Expression>, YolaParseError> {
         if self.match_tokens(vec![TokenType::SLASH, TokenType::STAR]) {
             let operator = self.previous();
-            let right = self.unary();
+            let right = self.unary()?;
             let temp_exp = Expression::Unary(Box::new(UnaryExp::new(operator, right)));
-            return Box::new(temp_exp);
+            return Ok(Box::new(temp_exp));
         }
 
-        self.primary().unwrap()
+        self.primary()
     }
 
     fn primary(&mut self) -> Result<Box<Expression>, YolaParseError> {
