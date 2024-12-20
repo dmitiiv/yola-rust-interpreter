@@ -1,6 +1,7 @@
 use crate::lexemes::token::Token;
 
 #[warn(dead_code)]
+#[derive(Debug)]
 pub enum Expression {
     Binary(Box<BinaryExp>),
     Unary(Box<UnaryExp>),
@@ -18,6 +19,7 @@ impl<T> Expr<T> for Expression {
         }
     }
 }
+#[derive(Debug)]
 pub struct BinaryExp {
     pub left: Box<Expression>,
     pub operator: Token,
@@ -40,6 +42,7 @@ impl<T> Expr<T> for BinaryExp {
     }
 }
 
+#[derive(Debug)]
 pub struct UnaryExp {
     pub operator: Token,
     pub right: Box<Expression>,
@@ -57,6 +60,7 @@ impl<T> Expr<T> for UnaryExp {
     }
 }
 
+#[derive(Debug)]
 pub struct GroupExp {
     pub expression: Box<Expression>,
 }

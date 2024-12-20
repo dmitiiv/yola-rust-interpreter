@@ -18,20 +18,23 @@ use crate::{
 
 use crate::ast::expression::{Expression, GroupExp, LiteralExp, UnaryExp};
 
-struct Parser {
+pub struct Parser {
     pub tokens: Vec<Token>,
     current: usize,
 }
 
 impl Parser {
-    pub fn new(&mut self, tokens: Vec<Token>) -> Self {
+    pub fn new(tokens: Vec<Token>) -> Self {
         Self { tokens, current: 0 }
     }
 
-    pub fn parse(&mut self) -> Result<Box<Expression>, YolaParseError> {
+    pub fn parse(&mut self) -> Option<Box<Expression>> {
         match self.expression() {
-            Ok(expr) => Ok(expr),
-            Err(err) => Err(err),
+            Ok(expr) => Some(expr),
+            Err(err) => {
+                println!("{}", err);
+                None
+            }
         }
     }
 
@@ -147,7 +150,7 @@ impl Parser {
         }
 
         if self.match_tokens(vec![TokenType::LEFT_PAREN]) {
-            let expr = self.expression();
+            let expr = self.expression()?;
             let _ = self.consume(TokenType::RIGHT_PAREN, "xpect ')' after expression.");
 
             let res_expr = Box::new(Expression::Group(Box::new(GroupExp::new(expr))));
