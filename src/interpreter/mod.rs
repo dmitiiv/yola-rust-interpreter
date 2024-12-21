@@ -1,8 +1,8 @@
 use crate::ast::expression::Visitor;
 
-pub struct Interpretier {}
+pub struct Interpreter {}
 
-impl Visitor<String> for Interpretier {
+impl Visitor<String> for Interpreter {
     fn visit_binary(&self, expr: &crate::ast::expression::BinaryExp) -> () {
         todo!()
     }
